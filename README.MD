@@ -1,0 +1,2 @@
+## Game: 
+### Random buttons will appear. Click each button in order before the timer expires. The timer is set to 1 second less than the amount of buttons. Refresh the page to change the amount of buttons.
