@@ -1,72 +1,93 @@
-const elemType = "button"
-const buttonNames = []
-const buttons = []
-let lost = false
-let won = false
+let win = false
+let clickCounter = 0
+let clicksToWin = 3
 
-
-const randomNum = (n) => {
-    // random int generator
-    return Math.ceil(Math.random() * n) + 1
+const createElement = (type, value) => {
+    const button = document.createElement(type)
+    button.innerText = value
+    return button
 }
 
-const nums = randomNum(5)
-
-// create button names form random int
-for (let i = 1; i < nums; i++) {
-    buttonNames.push(String(i))
-}
-
-// set clicked status of buttons
-let clicked = buttonNames.map(x => x = false)
-
-
-const createElement = (elem, name) => {
-    // create html elements
-    btn = document.createElement(elem)
-    btn.innerHTML = name
-    return btn
-}
 const addToView = (elem) => {
-    // add to DOM
-    document.querySelector("body").appendChild(elem)
+    const body = document.getElementById("status")
+    body.appendChild(elem)
 }
 
-// create elements
-for (let j = 0; j < buttonNames.length; j++) {
-    let x = createElement(elemType, buttonNames[j])
-    buttons.push(x)
-    addToView(x)
+const click_btn = createElement("button", "Click me!")
+addToView(click_btn)
+
+
+click_btn.addEventListener("click", () => {
+    clickCounter += 1
+    click_btn.innerText = `${clicksToWin - clickCounter} Clicks left.`
+    if (clickCounter >= 3) {
+        click_btn.innerText = "No More clicks felt."
+    } 
+    if (clickCounter >= clicksToWin) {
+        win = true
+    }
+})
+
+const countClicks = () => {
+    const clickedListTitle = createElement("p", `Button clicked: ${clickCounter} times.`)
+    addToView(clickedListTitle)
 }
 
-const contents = () => {
-    // post contents of clicked buttons status
-    clicked_contents_title = createElement("h2", "Contents of clicked")
-    addToView(clicked_contents_title)
-    clicked_contents = createElement("h3", clicked.toString())
-    addToView(clicked_contents)
+
+const message = () => {
+    let msg
+    if (win) {
+        msg = createElement("p", "You win!")
+    } else {
+        msg = createElement("p", "You lose!\n Too Slow!\n Must click at least 3 times.")
+    }
+    msg.id = "results"
+    addToView(msg)
 }
 
-const addEvents = (i) => {
-    // add events to buttons
-    buttons[i].addEventListener("click", () => {
-        if (won || lost) return
-        clicked[i] = true
-        if (clicked.every((elem) => elem === true)) {
-            won = true
-            document.getElementById("status").innerText = "you won!"
-        }
-        // contents()
-    })
+
+const randomNum = () => {
+    return Math.floor(Math.random() * 100) + 1
 }
 
-for (let i = 0; i < buttonNames.length; i++) {
-    addEvents(i)
+const restartDiv = createElement("div", "")
+restartDiv.id = "restart"
+
+const restart_btn = createElement("button", "Restart!")
+restartDiv.appendChild(restart_btn)
+addToView(restartDiv)
+
+
+restart_btn.addEventListener("click", () => {
+    clickCounter = 0
+    win = false
+    click_btn.innerText = `${clicksToWin} Clicks left.`
+    clearMsg()
+    randPos()
+    startGame()
+})
+
+
+const clearMsg = () => {
+    // clear messages
+    text = document.getElementById("results")
+    text.remove()
 }
 
-setTimeout(() => { 
-    // set timer for constraint
-    if (won || lost) return 
-    lost = true 
-    document.getElementById('status').innerText = "You lost!" 
-}, 1000 * buttons.length - 1) 
+const startGame = () => {
+    setTimeout(() => {
+        message()
+    }, 1000)
+}
+
+
+const randPos = () => {
+    // randomize restart button position
+    for (let i = 0; i < randomNum(100); i++) {
+        restartDiv.style.position = "absolute"
+        restartDiv.style.top = `${i * 10}px`
+        restartDiv.style.right = `${i * 20}px`
+    }
+}
+
+startGame()
